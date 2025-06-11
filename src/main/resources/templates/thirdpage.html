@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Endpoint Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+        }
+        .box {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .box h2 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .data-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #e9ecef;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .save-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .save-button:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            color: #0056b3;
+        }
+        .error, .message {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .message {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="box" th:if="${member != null}">
+        <h2 th:text="${member.name} - Edit Endpoint"></h2>
+        <div class="data-box">
+            <h3 th:text="${endpoint}"></h3>
+            <div th:if="${error != null}" class="error" th:text="${error}"></div>
+            <div th:if="${message != null}" class="message" th:text="${message}"></div>
+            <!-- Handle Actors (Alice Smith, ID 1) -->
+            <form th:action="@{/${member.id == 1 ? 'actors' : member.id == 2 ? 'films' : member.id == 3 ? 'inventory' : member.id == 4 ? 'payment' : member.id == 5 ? 'rental' : member.id == 6 ? 'staff' : member.id == 7 ? 'store' : 'categories'}/update}" method="post" th:if="${not #lists.isEmpty(actors)}">
+                <input type="hidden" name="id" th:value="${member.id}">
+                <input type="hidden" name="page" th:value="${page}">
+                <input type="hidden" name="size" th:value="${size}">
+                <input type="hidden" name="endpoint" th:value="${endpoint}">
+                <table>
+                    <tr>
+                        <th>Actor ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                    <tr th:each="actor, iter : ${actors}">
+                        <td th:text="${actor.actorId}"></td>
+                        <td>
+                            <input type="text" th:name="'actors[' + ${iter.index} + '].firstName'" th:value="${actor.firstName}">
+                            <input type="hidden" th:name="'actors[' + ${iter.index} + '].actorId'" th:value="${actor.actorId}">
+                        </td>
+                        <td>
+                            <input type="text" th:name="'actors[' + ${iter.index} + '].lastName'" th:value="${actor.lastName}">
+                        </td>
+                    </tr>
+                </table>
+                <button type="submit" class="save-button">Save</button>
+            </form>
+            <!-- Handle Films (Bob Johnson, ID 2) -->
+            <form th:action="@{/${member.id == 1 ? 'actors' : member.id == 2 ? 'films' : member.id == 3 ? 'inventory' : member.id == 4 ? 'payment' : member.id == 5 ? 'rental' : member.id == 6 ? 'staff' : member.id == 7 ? 'store' : 'categories'}/update}" method="post" th:if="${not #lists.isEmpty(films)}">
+                <input type="hidden" name="id" th:value="${member.id}">
+                <input type="hidden" name="page" th:value="${page}">
+                <input type="hidden" name="size" th:value="${size}">
+                <input type="hidden" name="endpoint" th:value="${endpoint}">
+                <table>
+                    <tr>
+                        <th>Film ID</th>
+                        <th>Title</th>
+                        <th>Rental Rate</th>
+                    </tr>
+                    <tr th:each="film, iter : ${films}">
+                        <td th:text="${film.filmId}"></td>
+                        <td>
+                            <input type="text" th:name="'films[' + ${iter.index} + '].title'" th:value="${film.title}">
+                            <input type="hidden" th:name="'films[' + ${iter.index} + '].filmId'" th:value="${film.filmId}">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" th:name="'films[' + ${iter.index} + '].rentalRate'" th:value="${film.rentalRate}">
+                        </td>
+                    </tr>
+                </table>
+                <button type="submit" class="save-button">Save</button>
+            </form>
+            <!-- Fallback for unsupported data -->
+            <div th:if="${#lists.isEmpty(actors) and #lists.isEmpty(films)}">
+                <p>No data available or endpoint not supported for editing.</p>
+            </div>
+            <a class="back-link" th:href="@{/${member.id == 1 ? 'actors' : member.id == 2 ? 'films' : member.id == 3 ? 'inventory' : member.id == 4 ? 'payment' : member.id == 5 ? 'rental' : member.id == 6 ? 'staff' : member.id == 7 ? 'store' : 'categories'}/details/{id}(id=${member.id},page=${page},size=${size})}">Back to Endpoints</a>
+        </div>
+    </div>
+    <div class="box" th:if="${member == null}">
+        <p class="error">Team member not found.</p>
+        <a class="back-link" href="/">Back to Team</a>
+    </div>
+</div>
+</body>
+</html>

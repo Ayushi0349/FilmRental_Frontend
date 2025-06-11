@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Members</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #e8ecef;
+            font-size: 18px; /* Increased base font size */
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px; /* Increased gap between boxes */
+            padding: 30px; /* Increased padding */
+            max-width: 1400px; /* Increased max-width for larger layout */
+        }
+        .box {
+            background-color: #ffffff;
+            border-radius: 12px; /* Larger border radius */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Larger shadow */
+            padding: 30px; /* Increased padding inside boxes */
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smoother transition */
+            min-height: 150px; /* Added min-height for consistency */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .box:hover {
+            transform: translateY(-8px); /* Larger hover lift */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Enhanced hover shadow */
+        }
+        .box a {
+            text-decoration: none;
+            color: #0056b3; /* Darker blue for better contrast */
+            font-size: 1.8em; /* Larger font size for names */
+            font-weight: 700; /* Bolder font weight */
+            transition: color 0.2s ease;
+        }
+        .box a:hover {
+            color: #003d80; /* Even darker blue on hover */
+        }
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px; /* Slightly smaller gap for tablets */
+                padding: 20px;
+            }
+            .box a {
+                font-size: 1.5em; /* Adjusted font size for tablets */
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 15px; /* Smaller gap for mobile */
+                padding: 15px;
+            }
+            .box a {
+                font-size: 1.3em; /* Adjusted font size for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="box" th:each="member : ${teamMembers}">
+        <a th:href="@{/details/{id}(id=${member.id})}" th:text="${member.name}"></a>
+    </div>
+</div>
+</body>
+</html>

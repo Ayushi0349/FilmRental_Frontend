@@ -1,6 +1,6 @@
 package com.filmrentalfrontend.controller;
 
-import com.filmrentalfrontend.model.dto.FilmDTO;
+import com.filmrentalfrontend.model.dto.ActorDTO;
 import com.filmrentalfrontend.model.dto.PageResponseDTO;
 import com.filmrentalfrontend.model.entity.TeamMember;
 import org.slf4j.Logger;
@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Controller
-@RequestMapping("/films")
-public class FilmController {
+@RequestMapping("/actors")
+public class ActorController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActorController.class);
     private final RestTemplate restTemplate;
 
-    public FilmController(RestTemplate restTemplate) {
+    public ActorController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -37,21 +37,22 @@ public class FilmController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             Model model) {
-        if (!id.equals(2L)) {
-            model.addAttribute("error", "Invalid team member for film endpoints.");
+        if (!id.equals(1L)) {
+            model.addAttribute("error", "Invalid team member for actor endpoints.");
             model.addAttribute("endpoints", List.of());
             return "pagesecond";
         }
 
-        TeamMember member = new TeamMember(2L, "Bob Johnson");
+        TeamMember member = new TeamMember(1L, "Alice Smith");
         model.addAttribute("member", member);
 
         try {
-            String url = String.format("http://localhost:8080/api/films/allfilmendpoints?page=%d&size=%d", page, size);
+            String url = String.format("http://localhost:8080/api/actors/allactorendpoints?page=%d&size=%d", page, size);
             logger.info("Fetching endpoints from: {}", url);
             ParameterizedTypeReference<PageResponseDTO<String>> responseType =
                     new ParameterizedTypeReference<PageResponseDTO<String>>() {};
             ResponseEntity<PageResponseDTO<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+            logger.debug("Response status: {}", response.getStatusCode());
             PageResponseDTO<String> pageResponse = response.getBody();
             if (pageResponse == null) {
                 logger.warn("Received null response body from: {}", url);
@@ -84,31 +85,31 @@ public class FilmController {
             @RequestParam int page,
             @RequestParam int size,
             Model model) {
-        if (!id.equals(2L)) {
-            model.addAttribute("error", "Invalid team member for film endpoints.");
+        if (!id.equals(1L)) {
+            model.addAttribute("error", "Invalid team member for actor endpoints.");
             return "pagethird";
         }
 
-        TeamMember member = new TeamMember(2L, "Bob Johnson");
+        TeamMember member = new TeamMember(1L, "Alice Smith");
         model.addAttribute("member", member);
         model.addAttribute("endpoint", endpoint);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
 
         try {
-            if (endpoint.equals("GET /api/films/title/{title}")) {
-                String url = "http://localhost:8080/api/films/title/Inception";
-                logger.info("Fetching film from: {}", url);
-                FilmDTO film = restTemplate.getForObject(url, FilmDTO.class);
-                model.addAttribute("films", film != null ? List.of(film) : List.of());
+            if (endpoint.equals("GET /api/actors/firstname/{fn}")) {
+                String url = "http://localhost:8080/api/actors/firstname/John";
+                logger.info("Fetching actors from: {}", url);
+                ActorDTO[] actors = restTemplate.getForObject(url, ActorDTO[].class);
+                model.addAttribute("actors", actors != null ? Arrays.asList(actors) : List.of());
             } else {
                 model.addAttribute("error", "Data fetching not implemented for this endpoint");
-                model.addAttribute("films", List.of());
+                model.addAttribute("actors", List.of());
             }
         } catch (RestClientException e) {
             logger.error("Error fetching data for endpoint {}: {}", endpoint, e.getMessage(), e);
             model.addAttribute("error", "Failed to fetch data: " + e.getMessage());
-            model.addAttribute("films", List.of());
+            model.addAttribute("actors", List.of());
         }
 
         return "pagethird";
@@ -120,20 +121,20 @@ public class FilmController {
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String endpoint,
-            @ModelAttribute("films") List<FilmDTO> films,
+            @ModelAttribute("actors") List<ActorDTO> actors,
             Model model) {
-        if (!id.equals(2L)) {
-            model.addAttribute("error", "Invalid team member for film endpoints.");
-            return "redirect:/films/details/" + id + "?page=" + page + "&size=" + size;
+        if (!id.equals(1L)) {
+            model.addAttribute("error", "Invalid team member for actor endpoints.");
+            return "redirect:/actors/details/" + id + "?page=" + page + "&size=" + size;
         }
 
         try {
-            if (endpoint.equals("GET /api/films/title/{title}")) {
-                for (FilmDTO film : films) {
-                    String url = "http://localhost:8080/api/films/update/title/" + film.getFilmId();
-                    logger.info("Updating film ID {} at: {}", film.getFilmId(), url);
-                    film.setLastUpdate(LocalDateTime.now());
-                    HttpEntity<FilmDTO> request = new HttpEntity<>(film);
+            if (endpoint.equals("GET /api/actors/firstname/{fn}")) {
+                for (ActorDTO actor : actors) {
+                    String url = "http://localhost:8080/api/actors/update/firstname/" + actor.getActorId();
+                    logger.info("Updating actor ID {} at: {}", actor.getActorId(), url);
+                    actor.setLastUpdate(LocalDateTime.now());
+                    HttpEntity<ActorDTO> request = new HttpEntity<>(actor);
                     restTemplate.exchange(url, HttpMethod.PUT, request, Void.class);
                 }
                 model.addAttribute("message", "Data updated successfully");
@@ -145,6 +146,6 @@ public class FilmController {
             model.addAttribute("error", "Failed to update data: " + e.getMessage());
         }
 
-        return "redirect:/films/details/" + id + "?page=" + page + "&size=" + size;
+        return "redirect:/actors/details/" + id + "?page=" + page + "&size=" + size;
     }
 }

@@ -1,4 +1,4 @@
-package com.filmrentalfrontend.model;
+package com.filmrentalfrontend.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

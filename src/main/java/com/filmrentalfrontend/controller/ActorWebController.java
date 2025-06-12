@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.client.HttpClientErrorException;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -90,6 +92,7 @@ public class ActorWebController {
             LOGGER.error("Error fetching actor with ID: {}", id, e);
             return "redirect:/actors?error=Error fetching actor: " + e.getMessage();
         }
+
     }
 
     @PostMapping("/actors/update/{id}")
@@ -209,12 +212,30 @@ public class ActorWebController {
                 model.addAttribute("totalPages", 1);
             } else {
                 LOGGER.warn("No actors found for search: firstName={}, lastName={}", firstName, lastName);
+            String url;
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                url = backendApiUrl + "/firstname/" + firstName;
+            } else if (lastName != null && !lastName.trim().isEmpty()) {
+                url = backendApiUrl + "/lastname/" + lastName;
+            } else {
+                LOGGER.warn("Search attempted without firstName or lastName");
+                return "redirect:/actors?error=Please provide a first name or last name";
+            }
+            LOGGER.info("Searching actors with URL: {}", url);
+            ResponseEntity<List<ActorDTO>> response = restTemplate.exchange(
+                    url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ActorDTO>>() {});
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                LOGGER.info("Found {} actors", response.getBody().size());
+                model.addAttribute("actors", response.getBody());
+            } else {
+                LOGGER.warn("No actors found for search");
                 model.addAttribute("actors", null);
                 model.addAttribute("error", "No actors found");
             }
         } catch (Exception e) {
             LOGGER.error("Unexpected error searching actors: firstName={}, lastName={}, error={}",
                     firstName, lastName, e.getMessage(), e);
+            LOGGER.error("Error searching actors", e);
             model.addAttribute("actors", null);
             model.addAttribute("error", "Error searching actors: " + e.getMessage());
         }
@@ -331,4 +352,5 @@ public class ActorWebController {
             this.totalPages = totalPages;
         }
     }
+}
 }

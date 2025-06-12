@@ -9,6 +9,9 @@
 <div class="container mt-5">
     <h1>Add New Film</h1>
 
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
     <div th:if="${warning}" class="alert alert-warning">
         <span th:text="${warning}"></span>
     </div>
@@ -24,19 +27,27 @@
         </div>
         <div class="mb-3">
             <label for="releaseYear" class="form-label">Release Year</label>
-            <input type="number" class="form-control" id="releaseYear" th:field="*{releaseYear}" required>
+            <input type="number" class="form-control" id="releaseYear" th:field="*{releaseYear}" required min="1900" max="2099">
         </div>
         <div class="mb-3">
             <label for="rentalDuration" class="form-label">Rental Duration (days)</label>
-            <input type="number" class="form-control" id="rentalDuration" th:field="*{rentalDuration}" required>
+            <input type="number" class="form-control" id="rentalDuration" th:field="*{rentalDuration}" required min="1">
         </div>
         <div class="mb-3">
             <label for="rentalRate" class="form-label">Rental Rate</label>
-            <input type="number" step="0.01" class="form-control" id="rentalRate" th:field="*{rentalRate}" required>
+            <input type="number" step="0.01" class="form-control" id="rentalRate" th:field="*{rentalRate}" required min="0.01">
         </div>
         <div class="mb-3">
-            <label for="languageId" class="form-label">Language ID</label>
-            <input type="number" class="form-control" id="languageId" th:field="*{languageId}" required>
+            <label for="replacementCost" class="form-label">Replacement Cost</label>
+            <input type="number" step="0.01" class="form-control" id="replacementCost" th:field="*{replacementCost}" required min="0.01">
+        </div>
+        <div class="mb-3">
+            <label for="languageId" class="form-label">Language</label>
+            <select class="form-control" id="languageId" th:field="*{languageId}" required>
+                <option value="">-- Select a Language --</option>
+                <option th:each="language : ${languages}" th:value="${language.languageId}" th:text="${language.name}"></option>
+            </select>
+            <small th:if="${languages == null}" class="text-muted">Languages not available. Enter a valid language ID manually.</small>
         </div>
         <div class="mb-3">
             <label for="actorIds" class="form-label">Actors (Optional)</label>

@@ -8,6 +8,11 @@
 <body>
 <div class="container mt-5">
     <h1>Edit Film</h1>
+
+    <div th:if="${error}" class="alert alert-danger">
+        <span th:text="${error}"></span>
+    </div>
+
     <form th:action="@{/films/update/{id}(id=${film.filmId})}" th:object="${film}" method="post">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>

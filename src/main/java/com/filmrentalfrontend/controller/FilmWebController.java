@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties.UiService.LOGGER;
@@ -32,6 +33,7 @@ public class FilmWebController {
     public FilmWebController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
 
     @GetMapping("/films")
     public String listFilms(@RequestParam(defaultValue = "0") int page,
@@ -64,7 +66,7 @@ public class FilmWebController {
     @GetMapping("/films/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         try {
-            // Since your API doesn't have a get-by-ID endpoint, fetch all films and filter
+            // Since your API doesn't have actor-list.html get-by-ID endpoint, fetch all films and filter
             String url = backendApiUrl + "/all?page=0&size=" + Integer.MAX_VALUE;
             ResponseEntity<PageResponse<FilmDTO>> response = restTemplate.exchange(
                     url,

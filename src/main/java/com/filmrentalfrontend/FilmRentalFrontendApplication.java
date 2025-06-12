@@ -11,4 +11,5 @@ public class FilmRentalFrontendApplication {
     public static void main(String[] args) {
         SpringApplication.run(FilmRentalFrontendApplication.class, args);
     }
+
 }

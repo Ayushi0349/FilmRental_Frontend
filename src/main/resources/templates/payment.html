@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <style>
+        .error { color: #dc3545; }
+        .success { color: #198754; }
+        .container { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="mb-4">Payment List</h2>
+    <div th:if="${success}" class="success mb-3" th:text="${success}"></div>
+    <div th:if="${error}" class="error mb-3" th:text="${error}"></div>
+
+    <!-- Link to Add Payment Form -->
+    <a th:href="@{/payments/add(page=${currentPage}, size=${pageSize})}" class="btn btn-primary mb-4">Add New Payment</a>
+
+    <!-- Payments Table -->
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+        <tr>
+            <th>Payment ID</th>
+            <th>Customer ID</th>
+            <th>Staff ID</th>
+            <th>Rental ID</th>
+            <th>Amount</th>
+            <th>Payment Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="payment : ${payments}">
+            <td th:text="${payment.paymentId}"></td>
+            <td th:text="${payment.customerId}"></td>
+            <td th:text="${payment.staffId}"></td>
+            <td th:text="${payment.rentalId}"></td>
+            <td th:text="${payment.amount}"></td>
+            <td th:text="${payment.paymentDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:class="${currentPage > 0} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/payments(page=${currentPage - 1}, size=${pageSize})}"
+                   th:if="${currentPage > 0}">Previous</a>
+                <span class="page-link" th:unless="${currentPage > 0}">Previous</span>
+            </li>
+            <li class="page-item" th:class="${currentPage < totalPages - 1} ? '' : 'disabled'">
+                <a class="page-link" th:href="@{/payments(page=${currentPage + 1}, size=${pageSize})}"
+                   th:if="${currentPage < totalPages - 1}">Next</a>
+                <span class="page-link" th:unless="${currentPage < totalPages - 1}">Next</span>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

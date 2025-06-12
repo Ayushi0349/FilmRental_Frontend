@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.client.HttpClientErrorException;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,6 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -86,20 +92,7 @@ public class ActorWebController {
             LOGGER.error("Error fetching actor with ID: {}", id, e);
             return "redirect:/actors?error=Error fetching actor: " + e.getMessage();
         }
-        // Suggested optimization (requires backend endpoint /api/actors/{id}):
-        /*
-        try {
-            String url = backendApiUrl + "/" + id;
-            ResponseEntity<ActorDTO> response = restTemplate.getForEntity(url, ActorDTO.class);
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-                model.addAttribute("actor", response.getBody());
-                return "actor-edit";
-            }
-            return "redirect:/actors?error=Actor not found";
-        } catch (Exception e) {
-            return "redirect:/actors?error=Error fetching actor: " + e.getMessage();
-        }
-        */
+
     }
 
     @PostMapping("/actors/update/{id}")
@@ -155,6 +148,70 @@ public class ActorWebController {
                                @RequestParam(required = false) String lastName,
                                Model model) {
         try {
+            // Validate input
+            if ((firstName == null || firstName.trim().isEmpty()) &&
+                    (lastName == null || lastName.trim().isEmpty())) {
+                LOGGER.warn("Search attempted without firstName or lastName");
+                model.addAttribute("error", "Please provide at least actor-list.html first name or last name");
+                model.addAttribute("actors", null);
+                return "actor-list";
+            }
+
+            List<ActorDTO> actors = new ArrayList<>();
+
+            // Search by firstName if provided
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                String encodedFirstName = URLEncoder.encode(firstName.trim(), StandardCharsets.UTF_8);
+                String url = backendApiUrl + "/firstname/" + encodedFirstName;
+                LOGGER.info("Searching actors by firstName with URL: {}", url);
+                try {
+                    ResponseEntity<List<ActorDTO>> response = restTemplate.exchange(
+                            url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ActorDTO>>() {});
+                    if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                        actors.addAll(response.getBody());
+                        LOGGER.info("Found {} actors for firstName: {}", response.getBody().size(), firstName);
+                    } else {
+                        LOGGER.warn("No actors found for firstName: {}", firstName);
+                    }
+                } catch (HttpClientErrorException e) {
+                    LOGGER.warn("Client error for firstName search ({}): status {}, message {}",
+                            firstName, e.getStatusCode(), e.getMessage());
+                }
+            }
+
+            // Search by lastName if provided
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                String encodedLastName = URLEncoder.encode(lastName.trim(), StandardCharsets.UTF_8);
+                String url = backendApiUrl + "/lastname/" + encodedLastName;
+                LOGGER.info("Searching actors by lastName with URL: {}", url);
+                try {
+                    ResponseEntity<List<ActorDTO>> response = restTemplate.exchange(
+                            url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ActorDTO>>() {});
+                    if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                        // Add only non-duplicate actors
+                        for (ActorDTO actor : response.getBody()) {
+                            if (actors.stream().noneMatch(a -> a.getActorId().equals(actor.getActorId()))) {
+                                actors.add(actor);
+                            }
+                        }
+                        LOGGER.info("Found {} actors for lastName: {}", response.getBody().size(), lastName);
+                    } else {
+                        LOGGER.warn("No actors found for lastName: {}", lastName);
+                    }
+                } catch (HttpClientErrorException e) {
+                    LOGGER.warn("Client error for lastName search ({}): status {}, message {}",
+                            lastName, e.getStatusCode(), e.getMessage());
+                }
+            }
+
+            if (!actors.isEmpty()) {
+                LOGGER.info("Total found {} actors for search: firstName={}, lastName={}",
+                        actors.size(), firstName, lastName);
+                model.addAttribute("actors", actors);
+                model.addAttribute("currentPage", 0);
+                model.addAttribute("totalPages", 1);
+            } else {
+                LOGGER.warn("No actors found for search: firstName={}, lastName={}", firstName, lastName);
             String url;
             if (firstName != null && !firstName.trim().isEmpty()) {
                 url = backendApiUrl + "/firstname/" + firstName;
@@ -176,6 +233,8 @@ public class ActorWebController {
                 model.addAttribute("error", "No actors found");
             }
         } catch (Exception e) {
+            LOGGER.error("Unexpected error searching actors: firstName={}, lastName={}, error={}",
+                    firstName, lastName, e.getMessage(), e);
             LOGGER.error("Error searching actors", e);
             model.addAttribute("actors", null);
             model.addAttribute("error", "Error searching actors: " + e.getMessage());
@@ -293,4 +352,5 @@ public class ActorWebController {
             this.totalPages = totalPages;
         }
     }
+}
 }

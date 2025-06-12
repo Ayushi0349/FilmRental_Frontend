@@ -21,6 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import java.util.Arrays;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class FilmWebController {
     public FilmWebController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
 
     @GetMapping("/films")
     public String listFilms(@RequestParam(defaultValue = "0") int page,
@@ -68,6 +70,7 @@ public class FilmWebController {
     @GetMapping("/films/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         try {
+
             String url = backendApiUrl + "/all?page=0&size=" + Integer.MAX_VALUE;
             LOGGER.info("Fetching film with ID: {} from URL: {}", id, url);
             ResponseEntity<PageResponse<FilmDTO>> response = restTemplate.exchange(

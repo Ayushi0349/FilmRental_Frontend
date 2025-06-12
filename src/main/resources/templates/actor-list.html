@@ -15,6 +15,15 @@
     </div>
 
     <div class="mb-3">
+        <form th:action="@{/actors/search}" method="get" class="row g-3" id="searchForm">
+            <div class="col-md-4">
+                <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Search by First Name" th:value="${param.firstName}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Search by Last Name" th:value="${param.lastName}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary" id="searchButton" disabled>Search</button>
         <form th:action="@{/actors/search}" method="get" class="row g-3">
             <div class="col-md-4">
                 <input type="text" name="firstName" class="form-control" placeholder="Search by First Name">
@@ -77,5 +86,26 @@
         </nav>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const searchButton = document.getElementById('searchButton');
+
+        function toggleSearchButton() {
+            const firstName = firstNameInput.value.trim();
+            const lastName = lastNameInput.value.trim();
+            searchButton.disabled = !(firstName || lastName);
+        }
+
+        firstNameInput.addEventListener('input', toggleSearchButton);
+        lastNameInput.addEventListener('input', toggleSearchButton);
+
+        // Initial check
+        toggleSearchButton();
+    });
+</script>
 </body>
 </html>
+

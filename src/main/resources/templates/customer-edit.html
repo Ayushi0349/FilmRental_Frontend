@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Customer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <h1>Edit Customer</h1>
+
+  <!-- Error Message -->
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <form th:action="@{/customers/update/{id}(id=${customer.customerId})}"
+        th:object="${customer}" method="post">
+
+    <!-- Hidden pagination fields -->
+    <input type="hidden" name="page" th:value="${page}" />
+    <input type="hidden" name="size" th:value="${size}" />
+
+    <!-- First Name -->
+    <div class="mb-3">
+      <label for="firstName" class="form-label">First Name</label>
+      <input type="text" id="firstName" class="form-control" th:field="*{firstName}" required />
+    </div>
+
+    <!-- Last Name -->
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input type="text" id="lastName" class="form-control" th:field="*{lastName}" required />
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" class="form-control" th:field="*{email}" required />
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input type="text" id="phone" class="form-control" th:field="*{phone}" />
+    </div>
+
+    <!-- Store ID -->
+    <div class="mb-3">
+      <label for="storeId" class="form-label">Store ID</label>
+      <input type="number" id="storeId" class="form-control" th:field="*{storeId}" required />
+    </div>
+
+    <!-- Address ID -->
+    <div class="mb-3">
+      <label for="addressId" class="form-label">Address ID</label>
+      <input type="number" id="addressId" class="form-control" th:field="*{addressId}" required />
+    </div>
+
+    <!-- Active -->
+    <div class="mb-3">
+      <label for="active" class="form-label">Active</label>
+      <select id="active" class="form-select" th:field="*{active}">
+        <option th:value="true">Active</option>
+        <option th:value="false">Inactive</option>
+      </select>
+    </div>
+
+    <!-- Create Date (readonly) -->
+    <div class="mb-3">
+      <label for="createDate" class="form-label">Create Date</label>
+      <input type="text" id="createDate" class="form-control" th:value="${customer.createDate}" readonly />
+    </div>
+
+    <!-- Last Update (readonly) -->
+    <div class="mb-3">
+      <label for="lastUpdate" class="form-label">Last Update</label>
+      <input type="text" id="lastUpdate" class="form-control" th:value="${customer.lastUpdate}" readonly />
+    </div>
+
+    <!-- Submit and Cancel Buttons -->
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a th:href="@{'/customers?page=' + ${page} + '&size=' + ${size}}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+</body>
+</html>

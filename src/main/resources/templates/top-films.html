@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Top 10 Rented Films</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>Top 10 Rented Films</h1>
+
+<div th:if="${storeId != null}">
+  <p>Showing top 10 films for Store ID: <strong th:text="${storeId}"></strong></p>
+</div>
+
+<div th:if="${error != null}">
+  <p class="error" th:text="${error}"></p>
+</div>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>Film Title</th>
+    <th>Number of Rentals</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="film, iterStat : ${films}">
+    <td th:text="${iterStat.index + 1}"></td>
+    <td th:text="${film[0].title}"></td>
+
+    <td th:text="${film[1]}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+<a th:href="@{/rentals}">Back to Rentals</a>
+</body>
+</html>

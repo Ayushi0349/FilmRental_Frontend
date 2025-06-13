@@ -191,13 +191,16 @@
     </div>
 
     <div class="footer">
-        <p></p>
+        <p>© 2025 Film Rental Store. All rights reserved.</p>
     </div>
 </div>
 
 <script>
     function navigateToController(endpoint) {
-        window.location.href = `http://localhost:8081/${endpoint}`;
+        // Use string concatenation to construct the URL
+        const url = "http://localhost:8081/" + endpoint + "/list";
+        console.log("Navigating to:", url); // Debugging
+        window.location.href = url;
     }
 </script>
 </body>

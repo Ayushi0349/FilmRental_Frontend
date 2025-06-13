@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Rental</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+<h1>Add New Rental</h1>
+
+<!-- Flash Messages -->
+<div th:if="${param.error}" class="alert alert-danger">
+  <span th:text="${param.error}"></span>
+</div>
+
+<!-- Form -->
+<form th:action="@{/rentals/add}" th:object="${rental}" method="post" class="mt-4">
+  <div class="mb-3">
+    <label for="customerId" class="form-label">Customer</label>
+    <select id="customerId" th:field="*{customerId}" class="form-select" required>
+      <option value="">Select Customer</option>
+      <option th:each="customer : ${customers}"
+              th:value="${customer.customerId}"
+              th:text="${customer.firstName} + ' ' + ${customer.lastName} + ' (' + ${customer.email} + ')'">
+      </option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="inventoryId" class="form-label">Inventory</label>
+    <select id="inventoryId" th:field="*{inventoryId}" class="form-select" required>
+      <option value="">Select Inventory</option>
+      <option th:each="inventory : ${inventories}"
+              th:value="${inventory.inventoryId}"
+              th:text="'Film ID: ' + ${inventory.film.filmId} + ' - Store ID: ' + ${inventory.store.storeId}">
+      </option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="staffId" class="form-label">Staff</label>
+    <select id="staffId" th:field="*{staffId}" class="form-select" required>
+      <option value="">Select Staff</option>
+      <option th:each="staff : ${staffList}"
+              th:value="${staff.staffId}"
+              th:text="${staff.firstName} + ' ' + ${staff.lastName}">
+      </option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="rentalDate" class="form-label">Rental Date</label>
+    <input type="datetime-local" id="rentalDate" th:field="*{rentalDate}" class="form-control" />
+  </div>
+
+  <div class="mb-3">
+    <label for="returnDate" class="form-label">Return Date</label>
+    <input type="datetime-local" id="returnDate" th:field="*{returnDate}" class="form-control" />
+  </div>
+
+  <button type="submit" class="btn btn-success">Add Rental</button>
+  <a th:href="@{/rentals}" class="btn btn-secondary">Cancel</a>
+</form>
+
+</body>
+</html>

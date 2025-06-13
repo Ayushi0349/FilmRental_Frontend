@@ -1,0 +1,130 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Edit Rental</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}" />-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h2>Edit Rental</h2>-->
+
+<!--<form th:action="@{'/rentals/edit/' + ${rental.rentalId}}" th:object="${rental}" method="post">-->
+<!--    <input type="hidden" th:field="*{rentalId}" />-->
+
+<!--    <div>-->
+<!--        <label>Rental Date:</label>-->
+<!--        <input type="datetime-local" th:field="*{rentalDate}" required />-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--        <label>Inventory ID:</label>-->
+<!--        <select th:field="*{inventoryId}" required>-->
+<!--            <option th:each="inv : ${inventories}"-->
+<!--                    th:value="${inv[0]}"-->
+<!--                    th:text="${inv[1]}"-->
+<!--                    th:selected="${inv[0]} == ${rental.inventoryId}">-->
+<!--            </option>-->
+<!--        </select>-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--        <label>Customer ID:</label>-->
+<!--        <select th:field="*{customerId}" required>-->
+<!--            <option th:each="cust : ${customers}"-->
+<!--                    th:value="${cust.customerId}"-->
+<!--                    th:text="${cust.firstName + ' ' + cust.lastName}"-->
+<!--                    th:selected="${cust.customerId} == ${rental.customerId}">-->
+<!--            </option>-->
+<!--        </select>-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--        <label>Return Date:</label>-->
+<!--        <input type="datetime-local" th:field="*{returnDate}" />-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--        <label>Staff ID:</label>-->
+<!--        <select th:field="*{staffId}" required>-->
+<!--            <option th:each="staff : ${staff}"-->
+<!--                    th:value="${staff[0]}"-->
+<!--                    th:text="${staff[1]}"-->
+<!--                    th:selected="${staff[0]} == ${rental.staffId}">-->
+<!--            </option>-->
+<!--        </select>-->
+<!--    </div>-->
+
+<!--    <div>-->
+<!--        <button type="submit">Update Rental</button>-->
+<!--        <a th:href="@{/rentals}">Cancel</a>-->
+<!--    </div>-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Rental</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<h2>Edit Rental</h2>
+
+<form th:action="@{'/rentals/edit/' + ${rental.rentalId}}" th:object="${rental}" method="post">
+  <input type="hidden" th:field="*{rentalId}" />
+
+  <div>
+    <label>Rental Date:</label>
+    <input type="datetime-local" th:field="*{rentalDate}" required />
+  </div>
+
+  <div>
+    <label>Inventory ID:</label>
+    <select th:field="*{inventoryId}" required>
+      <option th:each="inv : ${inventories}"
+              th:value="${inv[0]}"
+              th:text="${inv[1]}"
+              th:selected="${inv[0]} == *{inventoryId}">
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label>Customer ID:</label>
+    <select th:field="*{customerId}" required>
+      <option th:each="cust : ${customers}"
+              th:value="${cust.customerId}"
+              th:text="${cust.firstName + ' ' + cust.lastName}"
+              th:selected="${cust.customerId} == *{customerId}">
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label>Return Date:</label>
+    <input type="datetime-local" th:field="*{returnDate}" />
+  </div>
+
+  <div>
+    <label>Staff ID:</label>
+    <select th:field="*{staffId}" required>
+      <option th:each="staff : ${staff}"
+              th:value="${staff[0]}"
+              th:text="${staff[1]}"
+              th:selected="${staff[0]} == *{staffId}">
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <button type="submit">Update Rental</button>
+    <a th:href="@{/rentals}">Cancel</a>
+  </div>
+</form>
+
+</body>
+</html>

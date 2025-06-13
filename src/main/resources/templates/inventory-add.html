@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Inventory</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">Add New Inventory</h1>
+
+    <form th:action="@{/inventories/add}" th:object="${inventory}" method="post" class="bg-white p-6 rounded shadow-md">
+        <div th:if="${error}" class="text-red-500 mb-4" th:text="${error}"></div>
+        <div th:if="${success}" class="text-green-500 mb-4" th:text="${success}"></div>
+
+        <div class="mb-4">
+            <label for="storeId" class="block text-gray-700">Store ID</label>
+            <input type="number" th:field="*{storeId}" id="storeId" class="w-full p-2 border rounded" required/>
+            <div th:if="${#fields.hasErrors('storeId')}" th:errors="*{storeId}" class="text-red-500"></div>
+        </div>
+
+        <div class="mb-4">
+            <label for="filmId" class="block text-gray-700">Film ID</label>
+            <input type="number" th:field="*{filmId}" id="filmId" class="w-full p-2 border rounded" required/>
+            <div th:if="${#fields.hasErrors('filmId')}" th:errors="*{filmId}" class="text-red-500"></div>
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Inventory</button>
+            <a th:href="@{/inventories}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

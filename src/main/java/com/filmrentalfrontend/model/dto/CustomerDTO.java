@@ -12,7 +12,6 @@ public class CustomerDTO {
     private String email;
     private Integer storeId;
     private Integer addressId;
-    private String phone;
     private Boolean active;
     private LocalDate createDate;
     private LocalDateTime lastUpdate;

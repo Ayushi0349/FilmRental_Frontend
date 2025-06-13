@@ -1,0 +1,33 @@
+<!-- templates/staff-detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Staff Detail</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h2>Staff Details</h2>
+
+<div th:if="${staff != null}">
+  <p><strong>Staff ID:</strong> <span th:text="${staff.staffId}"></span></p>
+  <p><strong>First Name:</strong> <span th:text="${staff.firstName}"></span></p>
+  <p><strong>Last Name:</strong> <span th:text="${staff.lastName}"></span></p>
+  <p><strong>Email:</strong> <span th:text="${staff.email}"></span></p>
+  <p><strong>Active:</strong> <span th:text="${staff.active}"></span></p>
+  <p><strong>Store ID:</strong> <span th:text="${staff.storeId}"></span></p>
+  <p><strong>Username:</strong> <span th:text="${staff.username}"></span></p>
+  <p><strong>Address ID:</strong> <span th:text="${staff.addressId}"></span></p>
+  <p><strong>Picture:</strong></p>
+  <div th:if="${staff.picture != null}">
+    <img th:src="'data:image/jpeg;base64,' + ${staff.picture}" alt="Staff Picture" width="150" height="150" />
+  </div>
+</div>
+
+<div th:if="${staff == null}">
+  <p>No staff data found.</p>
+</div>
+
+<a th:href="@{/staff/all/active}">← Back to Staff List</a>
+</body>
+</html>

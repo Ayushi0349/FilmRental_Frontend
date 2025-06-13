@@ -54,6 +54,7 @@ public class FilmWebController {
                 model.addAttribute("films", response.getBody().getContent());
                 model.addAttribute("currentPage", page);
                 model.addAttribute("totalPages", response.getBody().getTotalPages());
+                model.addAttribute("size", size); // Add this line to pass size to the model
             } else {
                 LOGGER.warn("No films found or error occurred");
                 model.addAttribute("films", null);

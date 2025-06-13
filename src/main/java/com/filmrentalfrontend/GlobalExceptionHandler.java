@@ -25,4 +25,5 @@ public class GlobalExceptionHandler {
         model.addAttribute("error", "Page not found: " + e.getRequestURL());
         return "error";
     }
+}
 
